@@ -1,0 +1,10 @@
+# **MUST REPLACE 'storage.example.com' WITH YOUR ACTUAL DOMAIN**
+storage.example.com {
+    # Reverse proxy to the MinIO container on its internal port 9000
+    reverse_proxy minio:9000
+}
+
+# Optional: MinIO Console (Web UI) on a separate subdomain
+# console.example.com {
+#     reverse_proxy minio:9001
+# }

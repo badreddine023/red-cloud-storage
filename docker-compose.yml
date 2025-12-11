@@ -1,0 +1,42 @@
+version: "3.8"
+
+services:
+  minio:
+    image: minio/minio:latest
+    container_name: red_cloud_minio
+    restart: unless-stopped
+    environment:
+      # **MUST CHANGE THESE TO SECURE VALUES**
+      MINIO_ROOT_USER: minioadmin
+      MINIO_ROOT_PASSWORD: VeryStrongPassword123!
+    volumes:
+      # Persistent storage for MinIO data
+      - ./minio_data:/data
+    command: server /data --console-address ":9001"
+    networks:
+      - web
+
+  caddy:
+    image: caddy:2
+    container_name: red_cloud_caddy
+    restart: unless-stopped
+    ports:
+      # Caddy listens on standard HTTP/HTTPS ports
+      - "80:80"
+      - "443:443"
+    volumes:
+      # Caddyfile configuration
+      - ./Caddyfile:/etc/caddy/Caddyfile
+      # Caddy data volume for TLS certificates (Let's Encrypt)
+      - caddy_data:/data
+      - caddy_config:/config
+    networks:
+      - web
+
+networks:
+  web:
+    driver: bridge
+
+volumes:
+  caddy_data:
+  caddy_config:
